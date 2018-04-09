@@ -1,0 +1,11 @@
+/.idea
+/files/style.css
+/files/script_settings.js
+/files/mqtt.lua
+/files/mqtt_message.lua
+/files/mqtt_test.lua
+/files/test.lua
+/files/iot.css
+/files/iot.min.css
+/files/example.html
+/files/module.js
