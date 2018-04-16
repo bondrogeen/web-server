@@ -4,7 +4,7 @@
 
 [English](https://github.com/bondrogeen/web-server/blob/master/doc/en/README.md)
 
-## !!! Проект развиваеться в другом направлении. Подробности [DoT](https://github.com/bondrogeen/DoT)
+## !!! Проект развивается в другом направлении. Подробности [DoT](https://github.com/bondrogeen/DoT)
 
 ## Особенности
 
