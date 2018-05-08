@@ -9,67 +9,32 @@
  <link rel="stylesheet" href="style.css.gz" />
  <!--		<link href="nodemcu-css.css" rel="stylesheet">-->
  <style>
-  .card .card-image {
-   background: url(http://git.codedevice.ru/img/new.jpg) center center / cover no-repeat;
-   height: 200px;
-   border-bottom: 1px solid
-  }
-
-  .card .card-reveal p {
-   margin: 0;
-  }
-
-  .b {
-   font-weight: 700;
-  }
-
-  .git,
-  .vers,
-  .btnInfo,
-  .sett {
-   position: absolute;
-  }
-
-  .btnInfo {
-   right: 23px;
-   bottom: 50px;
-   font-size: 3rem;
-   cursor: pointer;
-  }
-
-  .git,
-  .vers {
-   right: 25px;
-   bottom: 23px;
-  }
-
-  .sett {
-   bottom: 25px;
-   right: 75px;
-  }
-
-  .card .card-content {
-       min-height: 115px;
-  }
+  .sideopen a {
+    cursor: pointer;
+}
  </style>
 </head>
 
 <body>
- <div id="mySidenav" class="sidenav">
-  <span href="javascript:void(0)" class="close" onclick="closeNav()">&times;</span>
+<div id="loader" class="loader hide"></div>
+ <div id="sideNav" class="sidenav">
+  <span href="javascript:void(0)" class="close" onclick="document.getElementById('sideNav').classList.toggle('open');">&times;</span>
   <div class="in"></div>
+  <a href="http://dot.codedevice.ru/example/" target="_blank">IoT.css</a>
+  <a href="http://dot.codedevice.ru" target="_blank">DOT</a>
   <a href="https://github.com/bondrogeen/web-server" target="_blank">GitHub</a>
   <a href="http://codedevice.ru" target="_blank">CodeDevice</a>
+  <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HYHDHXVH6UE3C" target="_blank">Donate</a>
  </div>
- <div class="sideopen warning"><a onclick="openNav()">&equiv;</a></div>
- <ul class="nav fix warning" id="myTopnav">
-  <li><a href="#" class="brand active">Web-server</a></li>
+ <div class="sideopen warning"><a onclick="document.getElementById('sideNav').classList.toggle('open');">&equiv;</a></div>
+ <ul class="nav fix warning" id="topNav">
+  <li><a href="#" class="brand">Web-server</a></li>
   <li><a href="settings.html">Settings</a></li>
   <li><a href="example.html.gz">Example</a></li>
   <li class="-exit"><a href="#" id="btn_exit" onclick="logout()">Exit</a></li>
-  <li class="-icon"><a href="#" onclick="nav()">&equiv;</a></li>
+  <li class="-icon"><a href="#" onclick="document.getElementById('topNav').classList.toggle('res');">&equiv;</a></li>
  </ul>
- <div id="Modal" class="modal">
+ <div id="Modal" class="modal hide">
   <div class="m-cont">
    <span class="close" id="close_m">&times;</span>
    <div class="m-body">
@@ -86,9 +51,12 @@
    <div class="s12 m2 l2">
 
    </div>
-   <div class="s12 m10 l-9 ">
+   <div class="s12 m10 l9 ">
     <div id="modules" class="row">
-<h1>Main page</h1>
+    <h1>Main page</h1>
+    <div class="s12">
+
+    </div>
     </div>
    </div>
   </div>
@@ -107,46 +75,9 @@
    });
    req.send(JSON.stringify(data));
   }
-
-  function openCard(id) {
-   var x = document.getElementById(id);
-   var rev = document.getElementById("rev" + id)
-   rev.style.display = "block";
-   rev.style.transform = "translateY(-100%)";
-  }
-
-  function closeCard(id) {
-   var x = document.getElementById(id);
-   var rev = document.getElementById("rev" + id)
-   rev.style.display = "none";
-   rev.style.transform = "translateY(0)";
-  }
-
   function logout() {
    document.cookie = "id=";
    location.href = '/login.html';
-  }
-
-  function nav() {
-   var x = document.getElementById("myTopnav");
-   if (x.classList.contains("res")) {
-    x.classList.remove('res');
-   } else {
-    x.classList.add('res');
-   }
-  }
-
-  function openNav() {
-   var side = document.getElementById("mySidenav")
-   if (side.style.width === "200px") {
-    side.style.width = "0px";
-   } else {
-    side.style.width = "200px";
-   }
-  }
-
-  function closeNav() {
-   document.getElementById("mySidenav").style.width = "0";
   }
  </script>
 </body>
