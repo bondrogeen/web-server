@@ -7,7 +7,7 @@ s.token=crypto.toBase64(node.random(100000))
 file.close()
 else
 s={
-wifi_id = "Web Server",
+wifi_id = "ESP-"..string.format("%x",node.chipid()*256):sub(0,6):upper(),
 wifi_pass = "",
 wifi_mode = "AP",
 auth="ON",

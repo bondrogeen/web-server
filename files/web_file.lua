@@ -8,9 +8,10 @@ local ex={
   jpeg = "image/jpeg",
   jpg = "image/jpeg"
 }
+local function str(t) local o,j if type(t)=="table"then o,j=pcall(sjson.encode,t)else j=tostring(t)end return j end
 local op="web_control.luastyle.css.gzlogin.html"
-local function executeCode (s,p)
- for v in s:gmatch(p) do
+local function executeCode(s,p)
+ for v in s:gmatch(p)do
   local _,c=pcall(loadstring(v))
   s=s:gsub(p,tostring(c==nil and "" or c),1)
  end return s
@@ -22,9 +23,7 @@ local function header(c,t,g)
  return s
 end
 return function(conn,fn,args,cookie)
- local line
- local gzip=fn:match(".gz")
- local ftype=fn:gsub(".gz",""):match("%.([%a%d]+)$")
+ local gzip,ftype,line=fn:match(".gz"),fn:gsub(".gz",""):match("%.([%a%d]+)$")
  if s.auth=="ON"then
  if not cookie or cookie.id~=crypto.toBase64(crypto.mask(s.auth_login..s.auth_pass,s.token)) then
   if ftype=="html"then fn="login.html"end
@@ -36,7 +35,7 @@ return function(conn,fn,args,cookie)
   conn:send(header("200 OK",ex[ftype]or"text/plain",gzip))
  else
   conn:send(header("404 Not Found","text/html"))
-  conn:send("<h1>Page not found</h1>") return
+  conn:send("<h1>Page not found</h1>")return
  end
  if ftype=="html"then
   arg=args
@@ -59,7 +58,7 @@ return function(conn,fn,args,cookie)
   fd:close() fd=nil arg=nil
   elseif ftype=="lua"then
   local k, c = pcall(dofile(fn),args)
-  conn:send(type(c)=="string"and c or"error")
+  conn:send(str(c))
   else
   local d=0
   local all=file.open(fn,"r")

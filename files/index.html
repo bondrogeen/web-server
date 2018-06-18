@@ -10,13 +10,14 @@
  <!--		<link href="nodemcu-css.css" rel="stylesheet">-->
  <style>
   .sideopen a {
-    cursor: pointer;
-}
+   cursor: pointer;
+  }
+
  </style>
 </head>
 
 <body>
-<div id="loader" class="loader hide"></div>
+ <div id="loader" class="loader hide"></div>
  <div id="sideNav" class="sidenav">
   <span href="javascript:void(0)" class="close" onclick="document.getElementById('sideNav').classList.toggle('open');">&times;</span>
   <div class="in"></div>
@@ -52,11 +53,28 @@
 
    </div>
    <div class="s12 m10 l9 ">
-    <div id="modules" class="row">
-    <h1>Main page</h1>
-    <div class="s12">
-
-    </div>
+    <div class="row">
+     <div class="s12">
+     <h1>Main page</h1>
+      <table>
+    <thead>
+      <tr>
+        <th>№</th>
+        <th>ChipID</th>
+        <th>FlashID</th>
+        <th>Heap</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><?lua return(string.format("%x",node.chipid()*256):sub(0,6):upper()) ?></td>
+        <td><?lua return(string.format("%x",node.flashid()*256):sub(0,6):upper()) ?></td>
+        <td><?lua return(node.heap()) ?></td>
+      </tr>
+    </tbody>
+  </table>
+     </div>
     </div>
    </div>
   </div>
@@ -75,10 +93,12 @@
    });
    req.send(JSON.stringify(data));
   }
+
   function logout() {
    document.cookie = "id=";
    location.href = '/login.html';
   }
+
  </script>
 </body>
 

@@ -90,8 +90,10 @@ All other files are transferred byte by byte (1024 bytes at a time), there are a
 
 ## Changelog
 
+### 0.1.2 (2018-06-18)
+* (bondrogeen) Minor fix.
 ### 0.1.1 (2018-04-09)
-* (bondrogeen) fixed the problem with the digital password wi-fi.
+* (bondrogeen) Fixed the problem with the digital password wi-fi.
 ### 0.1.0 (2018-03-26)
 * (bondrogeen) Significantly changed the markup classes (before .xs-12 now .s12 ). Changed the appearance. 
 ### 0.0.7 (2018-03-22)

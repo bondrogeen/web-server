@@ -91,6 +91,8 @@ http://IP/test.lua?key=value&name=Roman
 
 ## Changelog
 
+### 0.1.2 (2018-06-18)
+* (bondrogeen) Мелкие правки.
 ### 0.1.1 (2018-04-09)
 * (bondrogeen) Исправил проблему с цифровым паролем wi-fi.
 ### 0.1.0 (2018-03-26)
