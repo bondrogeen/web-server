@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  //= template/head.html
+  <title>Login</title>
+  <style>
+    small:hover {
+      color: #000000cc;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    small {
+      padding-top: 1rem;
+      float: right;
+    }
+
+    button {
+      width: 100%;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="cont">
+    <div class="row">
+      <div class="card s12 m4 of-m4 p-6">
+        <h1 class="center">Login</h1>
+        <div class="group">
+          <input type="text" id="login" name="login" required=" " value="">
+          <label for="login">LOGIN</label>
+        </div>
+        <div class="group">
+          <input type="password" name="pass" id="pass" required=" " value="">
+          <label for="pass">PASSWORD</label>
+        </div>
+        <div>
+          <small id="def">*Default login "<b>admin</b>" password "<b>0000</b>"</small>
+        </div>
+        <div class="group">
+          <button class="info" id="singIn">Sing in</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  //= template/footer.html
+  <script>
+    window.onload = function() {
+
+      function $(val) {
+        return document.getElementById(val);
+      }
+
+      document.getElementsByName('pass')[0].focus();
+
+      function send(page, data, callback) {
+        var req = new XMLHttpRequest();
+        req.open("POST", page, true);
+        req.setRequestHeader('Content-Type', 'application/json');
+        req.addEventListener("load", function() {
+          if (callback)(req.status === 200) ? callback(req.responseText) : callback(false)
+        });
+        req.send(JSON.stringify(data));
+      }
+
+      $('singIn').addEventListener("focus", function() {
+        var data = {};
+        data.login = $("login").value;
+        data.pass = $("pass").value;
+        send("web_control.lua", {
+          auth: data
+        }, function(res) {
+          console.log(res)
+          if (res == "false") {
+            $('login').classList.add('invalid');
+            $('pass').classList.add('invalid');
+          } else {
+            document.cookie = "id=" + res;
+            document.cookie = "ids=" + res;
+            location.href = '/';
+          }
+        })
+      })
+
+      $('def').addEventListener("click", function() {
+        $('login').value = "admin";
+        $('pass').value = "0000";
+      });
+
+      $('login').addEventListener("focus", function() {
+        $('login').classList.remove('invalid');
+        $('pass').classList.remove('invalid');
+      });
+
+      $('pass').addEventListener("focus", function() {
+        $('login').classList.remove('invalid');
+        $('pass').classList.remove('invalid');
+      });
+
+      document.onkeyup = function(e) {
+        e = e || window.event;
+        if (e.keyCode === 13) {
+          login();
+        }
+        return false;
+      }
+    }
+
+  </script>
+</body>
+
+</html>

@@ -1,118 +1,176 @@
 # web-server
 
-Веб сервер для прошивок NodeMCU для ESP8266.
+Web server for NodeMCU firmware for ESP8266.
+Rather, this is the basic template for your projects with a web interface.
 
-[English](https://github.com/bondrogeen/web-server/blob/master/doc/en/README.md)
+[Rus](https://codedevice.ru/archives/604)
 
-## !!! Проект развивается в другом направлении. Подробности [DoT](https://github.com/bondrogeen/DoT)
-
-## Особенности
-
-* GET, POST запросы
-* Разбор форм (application/x-www-form-urlencoded и application/json)
-* Возможность загрузки доп. файлов (js, css, ico,txt,jpg).
-* Минимальный размер кода в памяти, в режиме ожидания.
-* Возможность  включение LUA кода в HTML страницу. ( \<?lua return(node.chipid()) ?>)
-* Запуск LUA скриптов и передача им параметров по средствам POST и GET запросов.
-* Минимальная аутентификация.
-* Возможность загрузки сжатых файлов (.gz).
-
-## Структура
-
-### Инициализация:
-* init.lua - инициализации настроек и wi-fi.
-* init_settings.lua - получение настроек, так же хранятся настройки по умолчанию.
-* init_wifi.lua - подключение к wifi сети.
-
-### Сервер состоит из четырех основных скриптов:
-* web.lua - сам веб сервер.
-* web_request.lua - разбор ответов от клиента.
-* web_file.lua - передача файлов, запуск скриптов и загрузка html страниц с кодом lua.
-* web_control.lua - аутентификация, сохранения параметров, получения списка точек доступа.
-
-### Файлы:
-* favicon.ico - иконка.
-* index.html - главная страница.
-* settings.html - страница настроек.
-* login.html - страница аутентификация.
-* script_settings.js.gz - js скрипт (сжатый) для обработки и отправки форм.
-* style.css.gz - файл стилей (сжатый).
+## !!! The project develops in a different direction. Details [DoT](https://github.com/bondrogeen/DoT)
 
 
-## Установка
+## Features
 
-1. Необходимые модули ("crypto", "file", "gpio", "net", "node", "sjson", "tmr", "uart", "wifi") далее на ваше усмотрение. [Собрать прошивку](https://nodemcu-build.com/)
-2. Загрузить все [файлы](https://github.com/bondrogeen/web-server/tree/master/files) в модуль.
-3. Подключиться к точке доступа **Web server** и перейти по адресу **192.168.4.1**.
+* GET, POST requests
+* Parser forms (application / x-www-form-urlencoded and application / json)
+* Ability to download additional. files (js, css, ico, txt, jpg).
+* Minimum code size in memory, in standby mode.
+* Ability to include LUA code in the HTML page. ( \<?lua return(node.chipid()) ?>)
+* Run LUA scripts and send them parameters using POST and GET requests.
+* Minimal authentication.
+* Ability to download compressed files (.gz).
+
+## Structure
+
+### Initialization:
+* init.lua - initialization of settings.
+* init_settings.lua - getting settings, as well as keeping the default settings.  (GPIO4 to LOW - reset settings)
+* init_wifi.lua - connection to the wifi network.
+
+### The server consists of four main scripts:
+* web.lua - is the web server itself.
+* web_request.lua - analysis of responses from the client.
+* web_file.lua - transfer files, run scripts and load html pages with lua code.
+* web_control.lua - authentication, saving parameters, obtaining a list of access points.
+
+### Files:
+* favicon.ico - icon.
+* index.html - home page.
+* settings.html - settings page.
+* login.html - page authentication.
+* settings.js.gz - js script (compressed) for processing and sending forms.
+* style.css.gz - style file (compressed).
+
+## Installation
+
+1. The modules you need (file, gpio, net, node, sjson, tmr, uart, wifi). [Building the firmware](https://nodemcu-build.com/)
+2. Download all [files](https://github.com/bondrogeen/web-server/tree/master/files) to the module.
+3. Connect to the access point **ESP-XXXXXX** and go to the address **192.168.4.1**.
 			
-![Logo](doc/image/web_server_login.jpg)
+![Logo](https://raw.githubusercontent.com/bondrogeen/web-server/master/doc/image/web_server_login.jpg)
 			
-4. Вводим логин (admin) и пароль (0000).
+4. Enter the login (admin) and password (0000).
 			
-![Logo](doc/image/web_server_index_page.jpg)
+![Logo](https://raw.githubusercontent.com/bondrogeen/web-server/master/doc/image/web_server_index_page.jpg)
 			
-5. Переходим в **Настройки**.
+5. Go to **Settings**.
 			
-![Logo](doc/image/web_server_settings_page.jpg)
+![Logo](https://raw.githubusercontent.com/bondrogeen/web-server/master/doc/image/web_server_settings_page.jpg)
 
-6. Подключаемся к вашей wi-fi сети 
+6. Connect to your wi-fi network
 
-## Шаблон lua-скрипта для сервера
+## How to work with lua scripts
 
-Пример файл "test.lua"
-
-
-```lua   
+Example file "my_script.lua"
    
-Local function arg_to_str(val)    
-  local str=""    
-  for k, v in pairs(val) do     
-    str=str..k.." : "..v.."     
-  end    
-  return str    
-end   
-    
-return function (args)    
- return arg_to_str(args)   
-end    
+```lua
    
-```
+local gpio_to_pin = {  -- get number pin
+  GPIO5 = 1,
+  GPIO4 = 2,
+  GPIO0 = 3,
+  GPIO2 = 4,
+  GPIO14 = 5,
+  GPIO12 = 6,
+  GPIO13 = 7,
+  GPIO15 = 8,
+  GPIO3 = 9,
+  GPIO1 = 10,
+  GPIO9 = 11,
+  GPIO10 = 12
+}
+
+local function readGPIO(tab)  -- read GPIO
+  
+  local pin, response = gpio_to_pin[tab["read"]], {}
+  if pin then
+--    gpio.mode(pin, gpio.INPUT)
+    response[tab["read"]] = gpio.read(pin)
+    return response
+  end
+  return false
+end
    
+local function writeGPIO(tab)  -- write GPIO
+  
+  local pin, value, response = gpio_to_pin[tab["write"]], tonumber(tab["value"]), {}  
+  if (pin and (value == 1 or value == 0)) then
+    gpio.mode(pin, gpio.OUTPUT)
+    gpio.write(pin, value)
+    response[tab["write"]] = gpio.read(pin)
+    return response
+  end
+  return response
+end
 
-Параметры от форм (если они есть) будут переданы в таблицу **args**.
+return function (args)   -- args - table with arguments
+  local response = false
+  if args.read then response = readGPIO(args) end
+  if args.write then response = writeGPIO(args) end
+ return response  -- The table will be converted to a JSON object.
+end       
+   
+``` 
 
-http://IP/test.lua?key=value&name=Roman
 
-![test.lua](doc/image/test_lua_args.jpg)
 
-## Ограничения.
-Сервер обрабатывает файлы по разному, так для файлов с расширением .html чтение из файла идет построчное, это сделано для упрощения обработки встроенного Lua кода, на размер файла ограничений нет. C файлами с расширением .lua размер отправленных данных не более 4KB.
-Все остальные файлы передаются побайтно (1024 байт за раз), также ограничений на размер файла нет. Сервер не может принимать данные более 1.4KB (данные + заголовок). Пока не было такой необходимости.)))
+Parameters from forms (if any) will be passed to the table ** args **.
+
+http://192.168.1.49/my_script.lua?read=GPIO5 
+
+http://192.168.1.49/my_script.lua?write=GPIO13&value=0
+
+
+![Logo](https://raw.githubusercontent.com/bondrogeen/web-server/master/doc/image/web_server_my_script.jpg)
+
+
+## Contributing
+Contributions are welcome.
+
+The package is made up of 2 main folders:
+
+- /src (Source files)
+- /files (Compiled and compressed files)
+
+To setup and run a local copy:
+1. Clone this repo with `git clone https://github.com/bondrogeen/web-server`
+2. Run `npm install` in root folder
+
+After installing the dependencies, you can start working with the sources.
+
+3. Run `gilp build` (Compile and compress files)
+
+When you're done working on your changes, submit a PR with the details and include a 
+screenshot if you've changed anything visually.
+
+
+## Restrictions.
+The server processes the files in different ways, so for files with the extension .html the reading from the file is progressive, this is done to simplify the processing of the built-in Lua code, there is no limitation on the file size. With files with the .lua extension, the size of the sent data is no more than 4KB.
+All other files are transferred byte by byte (1024 bytes at a time), there are also no restrictions on the file size. The server can not receive data more than 1.4KB (data + header). While there was no such need.)))
 
 ## Changelog
 
+## 0.2.0 (2019-03-06)
+* (bondrogeen) Bug fixes, code optimization. add **src** folder
+
 ### 0.1.2 (2018-06-18)
-* (bondrogeen) Мелкие правки.
+* (bondrogeen) Minor fix.
 ### 0.1.1 (2018-04-09)
-* (bondrogeen) Исправил проблему с цифровым паролем wi-fi.
+* (bondrogeen) Fixed the problem with the digital password wi-fi.
 ### 0.1.0 (2018-03-26)
-* (bondrogeen) Существенно изменили классы разметки (было .xs-12 сейчас .s12 ). Изменил внешний вид.
+* (bondrogeen) Significantly changed the markup classes (before .xs-12 now .s12 ). Changed the appearance. 
 ### 0.0.7 (2018-03-22)
-* (bondrogeen) Добавил обновление файлов веб сервера
-* (bondrogeen) Исправил баг web_file.lua
+* (bondrogeen) Added update of web server files
+* (bondrogeen) Fixed bug web_file.lua
 ### 0.0.6 (2018-03-12)
-* (bondrogeen) Исправил баг в аутентификации
+* (bondrogeen) Fix authentication
 ### 0.0.5 (2018-03-04)
-* (bondrogeen) Добавлено тестовое прошивку, добавлено NodeMCU Flasher.
+* (bondrogeen) Added a test firmware, added NodeMCU Flasher
 ### 0.0.4 (2018-03-03)
-* (nedoskiv) Исправил утечку памяти.
-* (bondrogeen) Изменен внешний вид, мелкие исправления css.
+* (nedoskiv) Fix memory leak.
+* (bondrogeen) Changed the appearance, minor fixes css.
 ### 0.0.3 (2018-01-25)
-* (bondrogeen) Переименовал web_server.lua в web.lua
+* (bondrogeen) Rename web_server.lua to web.lua
 ### 0.0.2 (2018-01-13)
-* (bondrogeen) Изменил executeCode()
+* (bondrogeen) Changed executeCode()
 ### 0.0.1 (2017-12-08)
 * (bondrogeen) init.
-
-
-

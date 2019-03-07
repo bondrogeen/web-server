@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  //= template/head.html
+  <title>DoT</title>
+
+  <style>
+    .card .card-image {
+      background: url(http://git.codedevice.ru/img/new.jpg) center center / cover no-repeat;
+      height: 200px;
+      border-bottom: 1px solid
+    }
+
+    .card .card-reveal p {
+      margin: 0;
+    }
+
+    .b {
+      font-weight: 700;
+    }
+
+    .git,
+    .vers,
+    .btnInfo,
+    .sett {
+      position: absolute;
+    }
+
+    .btnInfo {
+      right: 23px;
+      bottom: 50px;
+      font-size: 3rem;
+      cursor: pointer;
+    }
+
+    .sideopen {
+      cursor: pointer;
+    }
+
+    .git,
+    .vers {
+      right: 20px;
+      bottom: 5px;
+    }
+
+    .sett {
+      bottom: 30px;
+      right: 20px;
+    }
+
+    .card .card-content {
+      min-height: 115px;
+    }
+
+  </style>
+</head>
+
+<body>
+  //= template/header.html
+
+  <div id="Modal" class="modal hide">
+    <div class="m-cont">
+      <span class="close" onclick="modclose();">&times;</span>
+      <div class="m-body">
+        <p>Save settings?</p>
+      </div>
+      <div class="m-foo">
+        <button class="success">Yes</button>
+        <button class="danger">No</button>
+      </div>
+    </div>
+  </div>
+  <div class="cont">
+    <div class="row">
+      <div class="s12 m2 l2">
+        <h1>Device</h1>
+        <div class="row">
+          <div class="s12">
+            <ul class="l-g">
+              <li>ChipID: <b><?lua return(string.format("%x",node.chipid()*256):sub(0,6):upper()) ?></b></li>
+              <li>FlashID: <b><?lua return(string.format("%x",node.flashid()*256):sub(0,6):upper()) ?></b></li>
+              <li>Heap: <b><?lua return(node.heap()) ?></b></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="s12 m10 l-9 ">
+        <h1>File list</h1>
+        <div id="modules" class="row">
+          <div class="s12">
+            <ul id="file" class="l-g">
+
+            </ul>
+          </div>
+          <div class="s12">
+            <br><br>
+            <button id="scan" class="right">Scan</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  //= template/footer.html
+  <script>
+    function $(val) {
+      return document.getElementById(val);
+    }
+
+    function send(page, data, callback) {
+      var req = new XMLHttpRequest();
+      req.open("POST", page, true);
+      req.setRequestHeader('Content-Type', 'application/json');
+      req.addEventListener("load", function() {
+        if (callback)(req.status === 200) ? callback(req.responseText) : callback(false)
+      });
+      req.send(JSON.stringify(data));
+    }
+
+    function pars(d) {
+      try {
+        return JSON.parse(d);
+      } catch (e) {
+        console.error(e);
+        return false;
+      }
+    }
+
+    function logout() {
+      document.cookie = "id=";
+      location.href = '/login.html';
+    }
+
+    function scanFiles() {
+      send("init_settings.lua", {
+        "list": true
+      }, function(res) {
+        console.log(res);
+        if (res) {
+          var data = pars(res);
+          if (data) {
+
+            var ul = document.getElementById('file');
+            ul.innerHTML = '';
+            console.log(data);
+            var i = 1
+            for (key in data) {
+              var li = document.createElement('li');
+              li.innerHTML = i + ") " + key + ' : ' + data[key] + ' bytes';
+              li.setAttribute('class', 'lg-i');
+              ul.appendChild(li);
+              i++;
+            }
+          }
+        }
+      });
+    }
+
+    window.onload = function() {
+      document.getElementById('loader').classList.add('hide');
+      document.getElementById('scan').onclick = function() {
+        scanFiles();
+      };
+    }
+
+  </script>
+</body>
+
+</html>
